@@ -45,18 +45,25 @@ namespace CodeLou.CSharp.Week5.Challenge.Controllers
             ViewBag.EnableSorting = false;
             if (!String.IsNullOrEmpty(OrderBy))
             {
-                // sql += ??
+                sql += "ORDER BY " + OrderBy + " " + OrderDirection;
                 // TODO: Bonus - How do we persist the OrderDirection?
             }
 
             List<Employee> allEmployees = repository.GetEmployees(sql);
             return View(allEmployees);
         }
+
         // GET: Detail
         public ActionResult Details(int id)
         {
+            SqlRepository repository = new SqlRepository(_LocalFileConnectionString);
+            string sql = String.Format("SELECT * FROM Employee WHERE Id = {0}", id);
+
+            Employee employee = repository.GetOneEmployee(sql);
+            ViewBag.EmployeeFullName = String.Format("{0} {1}", employee.FirstName, employee.LastName);
+
+            return View(employee);
             // TODO: Create View For Details and return employee model to view
-            return View();
         }
         // GET: Edit
         public ActionResult Edit(int id)
@@ -141,11 +148,18 @@ namespace CodeLou.CSharp.Week5.Challenge.Controllers
         [HttpPost]
         public ActionResult Create(Employee employee)
         {
+            SqlRepository repository = new SqlRepository(_LocalFileConnectionString);
+
+            string sql = String.Format($@"insert into Employee 
+            (PositionId, DepartmentId, FirstName, LastName, Email, Phone, Extension, HireDate, StartTime)
+            Values ( 1, 1, '{employee.FirstName}', '{employee.LastName}', '{employee.EMail}', '{employee.Phone}', '{employee.Extension}', '{employee.HireDate.ToString()}', '{employee.StartTime}')");
+
             // Hint: This method will be similar to the update method.
             // Hint: for now set the Position and Department to Id 1
-            
+
             // TODO: Create employee from form submission, redirect to list
-            return View();
+            repository.CreateEmployee(sql);
+            return RedirectToAction("Index");
         }        
     }    
 }
