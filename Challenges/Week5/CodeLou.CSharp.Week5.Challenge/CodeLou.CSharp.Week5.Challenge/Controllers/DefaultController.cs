@@ -42,10 +42,10 @@ namespace CodeLou.CSharp.Week5.Challenge.Controllers
             #endregion
 
             // TODO: How to we order the data by a column, enable sorting?
-            ViewBag.EnableSorting = false;
+            ViewBag.EnableSorting = true;
             if (!String.IsNullOrEmpty(OrderBy))
             {
-                sql += "ORDER BY " + OrderBy + " " + OrderDirection;
+                sql += " ORDER BY " + OrderBy + " " + OrderDirection;
                 // TODO: Bonus - How do we persist the OrderDirection?
             }
 
@@ -129,15 +129,26 @@ namespace CodeLou.CSharp.Week5.Challenge.Controllers
         // GET: Delete
         public ActionResult Delete(int id)
         {
+            SqlRepository repository = new SqlRepository(_LocalFileConnectionString);
+            string sql = String.Format("SELECT * FROM Employee WHERE Id = {0}", id);
+
+            Employee employee = repository.GetOneEmployee(sql);
+            ViewBag.EmployeeFullName = String.Format("{0} {1}", employee.FirstName, employee.LastName);
+
+            return View(employee);
             // TODO: Create View For Delete and return employee model to view
-            return View();
         }
         // POST: Delete
         [HttpPost]
         public ActionResult Delete(Employee employee)
         {
+            SqlRepository repository = new SqlRepository(_LocalFileConnectionString);
+
+            string sql = string.Format($@"DELETE FROM Employee WHERE Id='{employee.Id}'");
+
+            repository.DeleteEmplyee(sql);
             // TODO: Delete employee from the database and redirect to list
-            return View();
+            return RedirectToAction("Index");
         }
         // GET: Create
         public ActionResult Create()

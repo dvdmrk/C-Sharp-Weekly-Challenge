@@ -1,12 +1,14 @@
 ﻿@model CodeLou.CSharp.Week5.Challenge.Models.Employee
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Delete";
 }
 
-<h2>Details @ViewBag.EmployeeFullName</h2>
+<h2>Delete @ViewBag.EmployeeFullName</h2>
+@using (Html.BeginForm())
+{
 <div class="form-horizontal">
-    <h4>Employee</h4>
+    <h4>Delete Employee</h4>
     <hr />
     <div class="form-group">
         @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -57,6 +59,12 @@
         </div>
     </div>
 </div>
-    <div>
-        @Html.ActionLink("Back to List", "Index")
+<div class="form-group">
+    <div class="col-md-offset-2 col-md-10">
+        <input type="submit" value="Delete" class="btn btn-default" />
     </div>
+</div>
+}
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
